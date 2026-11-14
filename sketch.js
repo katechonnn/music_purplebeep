@@ -5,8 +5,11 @@ let period0 = 5;
 
 let midiNotes = [55, 60, 64, 67, 72, 79, 84, 88, 91];
 
+let soundOn = false;
+
 function setup() {
   createCanvas(400, 400);
+  outputVolume(0); // start silent
   for (let i=0; i<num; i++) {
     let sides = side0 + i*sideInc;
     let r = r0 + i*rInc;
@@ -20,14 +23,11 @@ function setup() {
 function draw() {
   background("#EDE8D0");
 
-  // Hint shown until the visitor clicks and sound unlocks
-  if (getAudioContext().state !== 'running') {
-    noStroke();
-    fill(80);
-    textAlign(CENTER);
-    textSize(14);
-    text('Click to turn on sound', width/2, 24);
-  }
+  noStroke();
+  fill(80);
+  textAlign(CENTER);
+  textSize(14);
+  text(soundOn ? 'Click to turn sound off' : 'Click to turn sound on', width/2, 24);
 
   translate(width/2, height/2);
   for (let i=num-1; i>=0; i--) {
@@ -38,11 +38,18 @@ function draw() {
   
 }
 
-// Browsers block audio until the visitor clicks or taps
-function mousePressed() {
-  userStartAudio();
+function setSound(on) {
+  soundOn = on;
+  if (on) userStartAudio();
+  outputVolume(on ? 1 : 0, 0.1);
 }
 
-function touchStarted() {
-  userStartAudio();
+// Click or tap the sketch to switch sound on and off
+function mousePressed() {
+  setSound(!soundOn);
 }
+
+// Lets the "Turn sound off" button on katechon.design mute the sketch
+window.addEventListener('message', function (e) {
+  if (e.data === 'sound-off') setSound(false);
+});
