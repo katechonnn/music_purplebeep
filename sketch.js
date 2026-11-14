@@ -1,13 +1,3 @@
-/*
------ Coding Tutorial by Patt Vira ----- 
-Name: Musical Onion
-Video Tutorial: https://youtu.be/cRzHaiL9HCE
-
-Connect with Patt: @pattvira
-https://www.pattvira.com/
-----------------------------------------
-*/
-
 let polygons = []; let num = 18;
 let side0 = 4; let sideInc = 2;
 let r0 = 20; let rInc = 10;
@@ -29,6 +19,16 @@ function setup() {
 
 function draw() {
   background("#EDE8D0");
+
+  // Hint shown until the visitor clicks and sound unlocks
+  if (getAudioContext().state !== 'running') {
+    noStroke();
+    fill(80);
+    textAlign(CENTER);
+    textSize(14);
+    text('Click to turn on sound', width/2, 24);
+  }
+
   translate(width/2, height/2);
   for (let i=num-1; i>=0; i--) {
     polygons[i].update();
@@ -36,4 +36,13 @@ function draw() {
   }
   
   
+}
+
+// Browsers block audio until the visitor clicks or taps
+function mousePressed() {
+  userStartAudio();
+}
+
+function touchStarted() {
+  userStartAudio();
 }
